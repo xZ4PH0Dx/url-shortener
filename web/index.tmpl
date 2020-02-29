@@ -1,0 +1,16 @@
+{{ define "index.tmpl" }}
+<form action="/shorten" method="POST">
+    <div>
+        <label>Fill in your link</label>
+        <input type="url" name="url">
+    </div>
+    <div>
+        <input type="submit" value="Get short url">
+    </div>
+</form>
+    {{ if .short_url }}
+    <div>
+        <p1>Your link is: <div id="short_url">{{ .short_url }}</div></p1>
+    </div>
+    {{ end }}
+{{ end }}
