@@ -2,7 +2,7 @@ package pg
 
 import (
 	"database/sql"
-	"fmt"
+	_ "github.com/lib/pq"
 	"log"
 )
 
@@ -14,7 +14,7 @@ type Client struct {
 
 func (c *Client) Open(dataSourceName string) error {
 	//c.logger.Printf("Trying to connect to PostgreSQL db with params: %v", dataSourceName)
-	fmt.Printf("Trying to connect to PostgreSQL db with params: %v", dataSourceName)
+	//fmt.Printf("Trying to connect to PostgreSQL db with params: %v", dataSourceName)
 	var err error //Q: если использовать строкой ниже :=, то выдает ",', ';', <assign op>, new line or '}' expected, got ':='"
 	c.DB, err = sql.Open("postgres", dataSourceName)
 	if err != nil {
