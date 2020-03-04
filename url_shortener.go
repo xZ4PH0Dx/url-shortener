@@ -1,4 +1,4 @@
-package pg
+package main
 
 import "context"
 
@@ -10,7 +10,8 @@ type Url struct {
 }
 
 type UrlRepository interface {
-	Create(ctx context.Context, u Url) (int, error)
+	Create(ctx context.Context, u *Url) (int, error)
 	ById(ctx context.Context, i int) (Url, error)
 	ByCode(ctx context.Context, s string) (Url, error)
+	Clear(ctx context.Context)
 }
