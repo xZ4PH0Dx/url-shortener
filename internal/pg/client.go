@@ -21,13 +21,9 @@ func (c *Client) Open(dataSourceName string) error {
 		//c.logger.Fatal(err)
 		c.logger.Printf("Error %v during connection to PostgreSQL db with params: %v", err, dataSourceName)
 	}
-	return nil
+	return err
 }
 
 func (c *Client) Close() error {
-	err := c.DB.Close()
-	if err != nil {
-		return error(err)
-	}
-	return nil
+	return c.DB.Close()
 }

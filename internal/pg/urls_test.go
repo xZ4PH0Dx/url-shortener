@@ -2,6 +2,7 @@ package pg
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"os"
@@ -42,8 +43,10 @@ func TestCreate(t *testing.T) {
 	}
 
 	db := NewSQLUrlRepo(dbClient.DB)
-	db.Clear(context.Background())
-	id, err = db.Create(context.Background(), &u)
+	//
+	urlClear(dbClient.DB)
+
+	err = db.Create(context.Background(), &u)
 	if err != nil {
 		t.Error(err)
 	}
@@ -79,5 +82,12 @@ func TestByCode(t *testing.T) {
 	dbU, err := db.ByCode(context.Background(), u.Code)
 
 	assert.Equal(t, dbU, u)
+}
 
+func urlClear(db *sql.DB) {
+	urlClear := "TRUNCATE TABLE urls"
+
+	_ = db.QueryRow(
+		urlClear,
+	)
 }

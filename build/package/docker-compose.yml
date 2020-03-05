@@ -8,7 +8,6 @@ services:
       - "/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"
       - "dbdata:/var/lib/postgresql/data"
       - "${PWD}/init.sql:/docker-entrypoint-initdb.d/init.sql"
-    restart: always
     ports:
       - 5432:5432
     environment:
