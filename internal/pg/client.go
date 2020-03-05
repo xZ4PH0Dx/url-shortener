@@ -2,8 +2,12 @@ package pg
 
 import (
 	"database/sql"
+	"github.com/go-kit/kit/log"
 	_ "github.com/lib/pq"
-	"log"
+)
+
+const (
+	defaultMaxConnections = 5
 )
 
 type Client struct {
@@ -12,15 +16,21 @@ type Client struct {
 	maxConnections int
 }
 
+func (c *Client) InitSchema() error {
+	_, err := c.DB.Exec(Schema)
+	return err
+}
+
 func (c *Client) Open(dataSourceName string) error {
-	//c.logger.Printf("Trying to connect to PostgreSQL db with params: %v", dataSourceName)
-	//fmt.Printf("Trying to connect to PostgreSQL db with params: %v", dataSourceName)
-	var err error //Q: если использовать строкой ниже :=, то выдает ",', ';', <assign op>, new line or '}' expected, got ':='"
+	//c.logger.Log("level", "debug", "msg", "connecting to db")//Q:не работает, ругается на nil pointer:(
+	var err error
 	c.DB, err = sql.Open("postgres", dataSourceName)
 	if err != nil {
-		//c.logger.Fatal(err)
-		c.logger.Printf("Error %v during connection to PostgreSQL db with params: %v", err, dataSourceName)
+		return err
 	}
+	c.DB.SetMaxIdleConns(c.maxConnections)
+	c.DB.SetMaxOpenConns(c.maxConnections)
+	//c.logger.Log("level", "debug", "msg", "connected to db")
 	return err
 }
 

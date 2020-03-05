@@ -14,24 +14,14 @@ type pgUrlRepo struct {
 	Conn *sql.DB
 }
 
-func (p *pgUrlRepo) clear(ctx context.Context) {
-	urlClear := "TRUNCATE TABLE urls"
-
-	_ = p.Conn.QueryRowContext(
-		ctx,
-		urlClear,
-	)
-}
-
 func (p *pgUrlRepo) Create(ctx context.Context, u *url_shortener.Url) error {
 	urlCreate := "INSERT INTO urls(code, original_url) VALUES ($1, $2) RETURNING ID;"
-	err := p.Conn.QueryRowContext(
+	return p.Conn.QueryRowContext(
 		context.Background(),
 		urlCreate,
 		u.Code,
 		u.Url,
 	).Scan(&u.ID)
-	return err
 }
 
 func (p *pgUrlRepo) ById(ctx context.Context, i int) (url_shortener.Url, error) {
