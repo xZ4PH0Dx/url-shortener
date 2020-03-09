@@ -14,3 +14,12 @@ type UrlRepository interface {
 	ById(ctx context.Context, i int) (Url, error)
 	ByCode(ctx context.Context, s string) (Url, error)
 }
+type PublicAPIServer interface {
+	CreateUrl(ctx context.Context) error
+}
+
+//type PublicAPIServer interface {
+//	CreateApi(ctx context.Context) error
+//	ById(ctx context.Context) (Url, error)
+//	ByCode(ctx context.Context) (Url, error)
+//}
