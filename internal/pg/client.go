@@ -1,8 +1,8 @@
 package pg
 
 import (
-	"database/sql"
 	"github.com/go-kit/kit/log"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
@@ -11,7 +11,7 @@ const (
 )
 
 type Client struct {
-	DB             *sql.DB
+	DB             *sqlx.DB
 	logger         log.Logger
 	maxConnections int
 }
@@ -22,15 +22,15 @@ func (c *Client) InitSchema() error {
 }
 
 func (c *Client) Open(dataSourceName string) error {
-	//c.logger.Log("level", "debug", "msg", "connecting to db")//Q:не работает, ругается на nil pointer:(
+	c.logger.Log("level", "debug", "msg", "connecting to db") //Q:не работает, ругается на nil pointer:(
 	var err error
-	c.DB, err = sql.Open("postgres", dataSourceName)
+	c.DB, err = sqlx.Open("postgres", dataSourceName)
 	if err != nil {
 		return err
 	}
 	c.DB.SetMaxIdleConns(c.maxConnections)
 	c.DB.SetMaxOpenConns(c.maxConnections)
-	//c.logger.Log("level", "debug", "msg", "connected to db")
+	c.logger.Log("level", "debug", "msg", "connected to db")
 	return err
 }
 

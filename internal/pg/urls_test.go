@@ -2,11 +2,10 @@ package pg
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 	"log"
-	"os"
 	"testing"
 	"url_shortener"
 )
@@ -31,7 +30,6 @@ var (
 )
 
 func init() {
-	_ = os.Chdir("../..") //pwd для тестов ./url_shortener/cmd/url_shortener, для скомпилированного файла ./url_shortener:(
 	dbClient := NewClient()
 	err := dbClient.Open(psqlInfo)
 	dbClient.InitSchema()
@@ -78,7 +76,7 @@ func TestById(t *testing.T) {
 }
 
 func TestByCode(t *testing.T) {
-	dbClient := Client{}
+	dbClient := NewClient()
 	err := dbClient.Open(psqlInfo)
 	if err != nil {
 		t.Error(err)
@@ -95,7 +93,7 @@ func TestByCode(t *testing.T) {
 	assert.Equal(t, dbU, u)
 }
 
-func dropUrlTable(db *sql.DB) {
+func dropUrlTable(db *sqlx.DB) {
 	dropUrlTable := "DROP TABLE IF EXISTS urls "
 	_ = db.QueryRow(
 		dropUrlTable,

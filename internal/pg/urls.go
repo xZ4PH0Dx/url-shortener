@@ -2,16 +2,16 @@ package pg
 
 import (
 	"context"
-	"database/sql"
+	"github.com/jmoiron/sqlx"
 	"url_shortener"
 )
 
-func NewSQLUrlRepo(Conn *sql.DB) url_shortener.UrlRepository {
+func NewSQLUrlRepo(Conn *sqlx.DB) url_shortener.UrlRepository {
 	return &pgUrlRepo{Conn: Conn,}
 }
 
 type pgUrlRepo struct {
-	Conn *sql.DB
+	Conn *sqlx.DB
 }
 
 func (p *pgUrlRepo) Create(ctx context.Context, u *url_shortener.Url) error {
