@@ -1,6 +1,8 @@
 package url_shortener
 
-import "context"
+import (
+	"context"
+)
 
 // Url represents ....
 type Url struct {
@@ -14,12 +16,8 @@ type UrlRepository interface {
 	ById(ctx context.Context, i int) (Url, error)
 	ByCode(ctx context.Context, s string) (Url, error)
 }
-type PublicAPIServer interface {
+type PublicAPIService interface {
 	CreateUrl(ctx context.Context) error
+	GetById(ctx context.Context) (Url, error)
+	GetByCode(ctx context.Context) (Url, error)
 }
-
-//type PublicAPIServer interface {
-//	CreateApi(ctx context.Context) error
-//	ById(ctx context.Context) (Url, error)
-//	ByCode(ctx context.Context) (Url, error)
-//}
