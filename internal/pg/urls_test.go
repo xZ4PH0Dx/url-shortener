@@ -71,7 +71,7 @@ func TestById(t *testing.T) {
 		t.Error(err)
 	}
 	dbU, err := db.ById(context.Background(), u.ID)
-	assert.Equal(t, dbU, u)
+	assert.Equal(t, u, dbU)
 
 }
 
@@ -90,7 +90,7 @@ func TestByCode(t *testing.T) {
 		t.Error(err)
 	}
 	dbU, err := db.ByCode(context.Background(), u.Code)
-	assert.Equal(t, dbU, u)
+	assert.Equal(t, u, dbU)
 }
 
 func dropUrlTable(db *sqlx.DB) {

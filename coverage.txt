@@ -1,5 +1,26 @@
 mode: atomic
 url_shortener/cmd/url_shortener/main.go:15.14,19.2 0 0
+url_shortener/internal/publicapi/router.go:18.58,24.2 2 2
+url_shortener/internal/publicapi/router.go:26.38,30.2 2 2
+url_shortener/internal/publicapi/router.go:32.36,33.16 1 0
+url_shortener/internal/publicapi/router.go:36.2,36.49 1 0
+url_shortener/internal/publicapi/router.go:33.16,35.3 1 0
+url_shortener/internal/publicapi/router.go:39.69,43.16 4 1
+url_shortener/internal/publicapi/router.go:46.2,47.35 2 1
+url_shortener/internal/publicapi/router.go:43.16,45.3 1 1
+url_shortener/internal/publicapi/router.go:50.67,53.16 3 1
+url_shortener/internal/publicapi/router.go:56.2,57.16 2 1
+url_shortener/internal/publicapi/router.go:60.2,61.16 2 1
+url_shortener/internal/publicapi/router.go:64.2,65.13 2 1
+url_shortener/internal/publicapi/router.go:53.16,55.3 1 0
+url_shortener/internal/publicapi/router.go:57.16,59.3 1 0
+url_shortener/internal/publicapi/router.go:61.16,63.3 1 0
+url_shortener/internal/publicapi/service.go:8.85,10.2 1 2
+url_shortener/internal/publicapi/service.go:16.84,18.16 2 1
+url_shortener/internal/publicapi/service.go:21.2,21.18 1 0
+url_shortener/internal/publicapi/service.go:18.16,20.3 1 1
+url_shortener/internal/publicapi/service.go:24.88,27.2 2 1
+url_shortener/internal/publicapi/service.go:29.96,32.2 2 0
 url_shortener/internal/pg/client.go:19.37,22.2 2 4
 url_shortener/internal/pg/client.go:24.52,28.16 4 4
 url_shortener/internal/pg/client.go:31.2,34.12 4 4
