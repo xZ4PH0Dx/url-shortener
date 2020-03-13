@@ -17,7 +17,7 @@ type UrlRepository interface {
 	ByCode(ctx context.Context, s string) (Url, error)
 }
 type PublicAPIService interface {
-	CreateUrl(ctx context.Context, u Url) (int, error)
+	CreateUrl(ctx context.Context, u Url) (Url, error)
 	GetById(ctx context.Context, i int) (Url, error)
 	GetByCode(ctx context.Context, code string) (Url, error)
 }

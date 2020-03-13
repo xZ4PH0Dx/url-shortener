@@ -34,7 +34,7 @@ func init() {
 	err := dbClient.Open(psqlInfo)
 	dbClient.InitSchema()
 	if err != nil {
-		log.Fatal(err)
+		t.Error(err)
 	}
 	defer dbClient.Close()
 }

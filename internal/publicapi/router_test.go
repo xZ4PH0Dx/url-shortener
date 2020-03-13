@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"strconv"
 	"testing"
 	"url_shortener"
 	"url_shortener/internal/pg"
@@ -27,8 +26,7 @@ var (
 )
 
 var (
-	respRec = httptest.NewRecorder()
-	u       = url_shortener.Url{
+	u = url_shortener.Url{
 		ID:   1,
 		Url:  "http://google.com",
 		Code: "so1gFSl5",
@@ -37,7 +35,6 @@ var (
 
 func TestService_GetById(t *testing.T) {
 	var testUrl url_shortener.Url
-
 	dbClient := pg.NewClient()
 	err := dbClient.Open(psqlInfo)
 	if err != nil {
@@ -51,17 +48,23 @@ func TestService_GetById(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	r := NewRouter(NewApiService(db))
-	r.InitializeRoutes()
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", "/url/1", nil)
-	r.router.ServeHTTP(respRec, req)
-	//response := executeRequest(req)
-	err = json.NewDecoder(respRec.Body).Decode(&testUrl)
+	r := NewRouter(NewApiService(db)).Handler()
+	srv := httptest.NewServer(r)
+	defer srv.Close()
+
+	resp, err := http.Get(srv.URL + "/urls/1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	err = json.NewDecoder(resp.Body).Decode(&testUrl)
 
 	assert.Equal(t, u, testUrl)
 }
 
 func TestService_CreateUrl(t *testing.T) {
+	var testUrl url_shortener.Url
 	dbClient := pg.NewClient()
 	err := dbClient.Open(psqlInfo)
 	if err != nil {
@@ -70,10 +73,10 @@ func TestService_CreateUrl(t *testing.T) {
 	dropUrlTable(dbClient.DB)
 	dbClient.InitSchema()
 	defer dbClient.Close()
-
 	db := pg.NewSQLUrlRepo(dbClient.DB)
-	r := NewRouter(NewApiService(db))
-	r.InitializeRoutes()
+	r := NewRouter(NewApiService(db)).Handler()
+	srv := httptest.NewServer(r)
+	defer srv.Close()
 
 	mUrl, err := json.Marshal(u)
 	if err != nil {
@@ -81,13 +84,17 @@ func TestService_CreateUrl(t *testing.T) {
 	}
 	b := bytes.NewBuffer(mUrl)
 
-	req, _ := http.NewRequestWithContext(context.Background(), "POST", "/create", b)
-	r.router.ServeHTTP(respRec, req)
-	i, err := strconv.Atoi(respRec.Body.String())
+	resp, err := http.Post(srv.URL+"/urls", "application/json", b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	err = json.NewDecoder(resp.Body).Decode(&testUrl)
 	if err != nil {
 		t.Error(err)
 	}
-	assert.Equal(t, u.ID, i)
+	assert.Equal(t, u.ID, testUrl.ID)
 }
 
 func dropUrlTable(db *sqlx.DB) {
