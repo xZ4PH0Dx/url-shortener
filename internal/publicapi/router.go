@@ -18,7 +18,7 @@ func NewRouter(s url_shortener.PublicAPIService) *Router {
 	}
 }
 
-func (ro *Router) Handler() http.Handler{
+func (ro *Router) Handler() http.Handler {
 	r := mux.NewRouter()
 	r.HandleFunc("/urls", ro.createUrlHandler).Methods("POST")
 	r.HandleFunc("/urls/{id:[0-9]+}", ro.getByIdHandler).Methods("GET")
@@ -75,10 +75,9 @@ func (ro *Router) getByIdHandler(w http.ResponseWriter, r *http.Request) {
 //
 //}
 
-func encodeErrorResp(err error, w http.ResponseWriter) {
+func encodeErrorResp(err error, w http.ResponseWriter) error {
 	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(err)
-	return
+	return json.NewEncoder(w).Encode(err)
 }
 
 func encodeJSONResponse(w http.ResponseWriter, resp interface{}) error {
