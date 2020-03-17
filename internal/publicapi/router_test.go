@@ -110,11 +110,7 @@ func TestService_MockCreateUrl(t *testing.T) {
 	var testUrl url_shortener.Url
 	db := &mocks.URLRepository{
 		CreateFn: func(ctx context.Context, u *url_shortener.Url) error {
-			u = &url_shortener.Url{
-				ID:   1,
-				Url:  u.Url,
-				Code: u.Code,
-			}
+			u.ID = 1
 			return nil
 		},
 	}
