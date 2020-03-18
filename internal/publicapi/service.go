@@ -13,20 +13,15 @@ type service struct {
 	urlRepo url_shortener.UrlRepository
 }
 
-func (a *service) CreateUrl(ctx context.Context, u url_shortener.Url) (int, error) {
+func (a *service) CreateUrl(ctx context.Context, u url_shortener.Url) (url_shortener.Url, error) {
 	err := a.urlRepo.Create(ctx, &u)
-	if err != nil {
-		return -1, err
-	}
-	return u.ID, err
+	return u, err
 }
 
 func (a *service) GetById(ctx context.Context, i int) (u url_shortener.Url, err error) {
-	u, err = a.urlRepo.ById(ctx, i)
-	return
+	return a.urlRepo.ById(ctx, i)
 }
 
 func (a *service) GetByCode(ctx context.Context, code string) (u url_shortener.Url, err error) {
-	u, err = a.urlRepo.ByCode(ctx, code)
-	return
+	return a.urlRepo.ByCode(ctx, code)
 }
