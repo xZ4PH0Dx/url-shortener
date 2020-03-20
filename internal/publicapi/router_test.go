@@ -4,27 +4,26 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/xZ4PH0Dx/url_shortener"
+	"github.com/xZ4PH0Dx/url_shortener/internal/mocks"
+	"github.com/xZ4PH0Dx/url_shortener/internal/publicapi"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"testing"
-	"url_shortener"
-	"url_shortener/internal/mocks"
-	"url_shortener/internal/publicapi"
 )
 
-var (
-	host       = "localhost"
-	dbPort     = 5432
-	dbUser     = "postgres"
-	dbPassword = "example"
-	dbName     = "postgres"
-	psqlInfo   = fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, dbPort, dbUser, dbPassword, dbName)
-)
+//var (
+//host       = "localhost"
+//dbPort     = 5432
+//dbUser     = "postgres"
+//dbPassword = "example"
+//dbName     = "postgres"
+//psqlInfo   = fmt.Sprintf("host=%s port=%d user=%s "+
+//	"password=%s dbname=%s sslmode=disable",
+//	host, dbPort, dbUser, dbPassword, dbName)
+//)
 
 var (
 	u = url_shortener.Url{
@@ -96,7 +95,9 @@ func TestService_GetById(t *testing.T) {
 			defer resp.Body.Close()
 
 			err = json.NewDecoder(resp.Body).Decode(&testUrl)
-
+			if err != nil {
+				t.Error(err)
+			}
 			if testUrl != tt.want {
 				t.Errorf("GetById() = %v, want %v", testUrl, tt.want)
 			}
