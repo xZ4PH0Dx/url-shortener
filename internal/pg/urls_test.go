@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
-	"github.com/xZ4PH0Dx/url_shortener"
+	"log"
 	"testing"
+	"url_shortener"
 )
 
 var (
@@ -31,9 +32,9 @@ var (
 func init() {
 	dbClient := NewClient()
 	err := dbClient.Open(psqlInfo)
-	_ = dbClient.InitSchema()
+	dbClient.InitSchema()
 	if err != nil {
-		fmt.Println(err)
+		t.Error(err)
 	}
 	defer dbClient.Close()
 }
@@ -45,7 +46,7 @@ func TestCreate(t *testing.T) {
 		t.Error(err)
 	}
 	dropUrlTable(dbClient.DB)
-	_ = dbClient.InitSchema()
+	dbClient.InitSchema()
 	defer dbClient.Close()
 	db := NewSQLUrlRepo(dbClient.DB)
 	err = db.Create(context.Background(), &u)
@@ -55,11 +56,6 @@ func TestCreate(t *testing.T) {
 	assert.Equal(t, 1, u.ID)
 }
 
-func TestService_GetById(t *testing.T){
-	test
-}
-
-
 func TestById(t *testing.T) {
 	dbClient := NewClient()
 	err := dbClient.Open(psqlInfo)
@@ -67,7 +63,7 @@ func TestById(t *testing.T) {
 		t.Error(err)
 	}
 	dropUrlTable(dbClient.DB)
-	_ = dbClient.InitSchema()
+	dbClient.InitSchema()
 	defer dbClient.Close()
 	db := NewSQLUrlRepo(dbClient.DB)
 	err = db.Create(context.Background(), &u)
@@ -75,9 +71,6 @@ func TestById(t *testing.T) {
 		t.Error(err)
 	}
 	dbU, err := db.ById(context.Background(), u.ID)
-	if err != nil {
-		t.Error(err)
-	}
 	assert.Equal(t, u, dbU)
 
 }
@@ -89,7 +82,7 @@ func TestByCode(t *testing.T) {
 		t.Error(err)
 	}
 	dropUrlTable(dbClient.DB)
-	_ = dbClient.InitSchema()
+	dbClient.InitSchema()
 	defer dbClient.Close()
 	db := NewSQLUrlRepo(dbClient.DB)
 	err = db.Create(context.Background(), &u)
@@ -97,9 +90,6 @@ func TestByCode(t *testing.T) {
 		t.Error(err)
 	}
 	dbU, err := db.ByCode(context.Background(), u.Code)
-	if err != nil {
-		t.Error(err)
-	}
 	assert.Equal(t, u, dbU)
 }
 

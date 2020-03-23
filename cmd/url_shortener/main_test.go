@@ -1,12 +1,13 @@
 package main
 
-//var (
-	//shortUrl string
-//)
-//
-//const (
-	//originalUrl = "http://asd.com"
-//)
+var (
+	shortUrl string
+)
+
+const (
+	originalUrl = "http://asd.com"
+)
+
 
 
 //func TestPostShorten(t *testing.T) {

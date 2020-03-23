@@ -22,7 +22,7 @@ func (c *Client) InitSchema() error {
 }
 
 func (c *Client) Open(dataSourceName string) error {
-	_ = c.logger.Log("level", "debug", "msg", "connecting to db") //Q:не работает, ругается на nil pointer:(
+	c.logger.Log("level", "debug", "msg", "connecting to db") //Q:не работает, ругается на nil pointer:(
 	var err error
 	c.DB, err = sqlx.Open("postgres", dataSourceName)
 	if err != nil {
@@ -30,7 +30,7 @@ func (c *Client) Open(dataSourceName string) error {
 	}
 	c.DB.SetMaxIdleConns(c.maxConnections)
 	c.DB.SetMaxOpenConns(c.maxConnections)
-	_ = c.logger.Log("level", "debug", "msg", "connected to db")
+	c.logger.Log("level", "debug", "msg", "connected to db")
 	return err
 }
 

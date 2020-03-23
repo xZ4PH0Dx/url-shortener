@@ -2,7 +2,7 @@ package publicapi
 
 import (
 	"context"
-	"github.com/xZ4PH0Dx/url_shortener"
+	"url_shortener"
 )
 
 func NewApiService(repo url_shortener.UrlRepository) url_shortener.PublicAPIService {

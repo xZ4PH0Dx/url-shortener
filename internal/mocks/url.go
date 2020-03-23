@@ -2,7 +2,7 @@ package mocks
 
 import (
 	"context"
-	"github.com/xZ4PH0Dx/url_shortener"
+	"url_shortener"
 )
 
 type URLRepository struct {
