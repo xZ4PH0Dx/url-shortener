@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/xZ4PH0Dx/url_shortener"
 	"net/http"
 	"strconv"
-	"github.com/xZ4PH0Dx/url_shortener"
 )
 
 type Router struct {
@@ -64,7 +64,7 @@ func (ro *Router) getByIdHandler(w http.ResponseWriter, r *http.Request) {
 	//w.Write(mu)
 	err = encodeJSONResponse(w, u)
 	if err != nil {
-		_ = encodeErrorResp(err, w)
+		_, _ = w.Write([]byte(encodeErrorResp(err, w).Error()))
 	}
 }
 

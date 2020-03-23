@@ -4,135 +4,144 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
+	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"github.com/xZ4PH0Dx/url_shortener"
 	"github.com/xZ4PH0Dx/url_shortener/internal/mocks"
 	"github.com/xZ4PH0Dx/url_shortener/internal/publicapi"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"strconv"
 	"testing"
 )
 
-//var (
-//host       = "localhost"
-//dbPort     = 5432
-//dbUser     = "postgres"
-//dbPassword = "example"
-//dbName     = "postgres"
-//psqlInfo   = fmt.Sprintf("host=%s port=%d user=%s "+
-//	"password=%s dbname=%s sslmode=disable",
-//	host, dbPort, dbUser, dbPassword, dbName)
-//)
-
-var (
-	u = url_shortener.Url{
-		ID:   1,
-		Url:  "http://google.com",
-		Code: "so1gFSl5",
-	}
-)
-
 func TestService_GetById(t *testing.T) {
-	var testUrl url_shortener.Url
-
-	type args struct {
-		x interface{}
-	}
-
 	tests := []struct {
-		name string
-		args args
-		want interface{}
+		name     string
+		urlID    string
+		db       *mocks.URLRepository
+		respBody string
 	}{
 		{
-			name: "success",
-			args: args{
-				x: 1,
+			name:  "success",
+			urlID: "1",
+			db: &mocks.URLRepository{
+				ByIdFn: func(ctx context.Context, id int) (url url_shortener.Url, err error) {
+					return url_shortener.Url{
+						ID:   1,
+						Url:  "http://google.com",
+						Code: "so1gFSl5",
+					}, nil
+				},
 			},
-			want: u,
+			respBody: `{"id":1,"url":"http://google.com","code":"so1gFSl5"}` + "\n",
 		},
 		{
-			name: "success nil",
-			args: args{
-				x: 2,
+			name:  "not found",
+			urlID: "2",
+			db: &mocks.URLRepository{
+				ByIdFn: func(ctx context.Context, id int) (url url_shortener.Url, err error) {
+					return
+				},
 			},
-			want: url_shortener.Url{},
+			respBody: `{"id":0,"url":"","code":""}` + "\n", //TODO very strange
+		},
+		{
+			name:  "bad id format",
+			urlID: "bad_id",
+			db: &mocks.URLRepository{
+				ByIdFn: func(ctx context.Context, id int) (url url_shortener.Url, err error) {
+					return
+				},
+			},
+			respBody: "404 page not found\n", //TODO very strange
 		},
 	}
-
-	db := &mocks.URLRepository{
-		ByIdFn: func(ctx context.Context, id int) (url url_shortener.Url, err error) {
-			if id == 1 {
-				url = url_shortener.Url{
-					ID:   1,
-					Url:  "http://google.com",
-					Code: "so1gFSl5",
-				}
-			}
-			return
-		},
-	}
-
-	r := publicapi.NewRouter(publicapi.NewApiService(db)).Handler()
-	srv := httptest.NewServer(r)
-	defer srv.Close()
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var strId string
-			switch v := tt.args.x.(type) {
-			case int:
-				strId = strconv.Itoa(v)
-			case string:
-				strId = v
-			}
-			uri := "/urls/" + strId
-			resp, err := http.Get(srv.URL + uri)
+			r := publicapi.NewRouter(publicapi.NewApiService(tt.db)).Handler()
+			srv := httptest.NewServer(r)
+			defer srv.Close()
+
+			resp, err := http.Get(fmt.Sprintf("%s%s%s", srv.URL, "/urls/", tt.urlID))
 			if err != nil {
 				t.Fatal(err)
 			}
-			defer resp.Body.Close()
 
-			err = json.NewDecoder(resp.Body).Decode(&testUrl)
+			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				t.Error(err)
 			}
-			if testUrl != tt.want {
-				t.Errorf("GetById() = %v, want %v", testUrl, tt.want)
+			if err = resp.Body.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if diff := cmp.Diff(tt.respBody, string(body)); diff != "" {
+				t.Errorf(diff)
 			}
 		})
 	}
-	//assert.Equal(t, u, testUrl)
 }
 
 func TestService_CreateUrl(t *testing.T) {
-	var testUrl url_shortener.Url
-	db := &mocks.URLRepository{
-		CreateFn: func(ctx context.Context, u *url_shortener.Url) error {
-			u.ID = 1
-			return nil
+	tests := []struct {
+		name     string
+		urlID    string
+		url      *url_shortener.Url
+		db       *mocks.URLRepository
+		respBody string
+	}{
+		{
+			name:  "success",
+			urlID: "1",
+			url: &url_shortener.Url{
+				ID:   1,
+				Url:  "http://google.com",
+				Code: "so1gFSl5",
+			},
+			db: &mocks.URLRepository{
+				ByIdFn: func(ctx context.Context, id int) (url url_shortener.Url, err error) {
+					return url_shortener.Url{
+						ID:   1,
+						Url:  "http://google.com",
+						Code: "so1gFSl5",
+					}, nil
+				},
+				CreateFn: func(ctx context.Context, u *url_shortener.Url) error {
+					return nil
+				},
+			},
+			respBody: `{"id":1,"url":"http://google.com","code":"so1gFSl5"}` + "\n",
 		},
 	}
-	r := publicapi.NewRouter(publicapi.NewApiService(db)).Handler()
-	srv := httptest.NewServer(r)
-	defer srv.Close()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := publicapi.NewRouter(publicapi.NewApiService(tt.db)).Handler()
+			srv := httptest.NewServer(r)
+			defer srv.Close()
 
-	mUrl, err := json.Marshal(u)
-	if err != nil {
-		t.Error(err)
-	}
-	b := bytes.NewBuffer(mUrl)
+			mUrl, err := json.Marshal(tt.url)
+			if err != nil {
+				t.Error(err)
+			}
+			b := bytes.NewBuffer(mUrl)
 
-	resp, err := http.Post(srv.URL+"/urls", "application/json", b)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer resp.Body.Close()
+			resp, err := http.Post(fmt.Sprintf("%s%s", srv.URL, "/urls"), "application/json", b)
 
-	err = json.NewDecoder(resp.Body).Decode(&testUrl)
-	if err != nil {
-		t.Error(err)
+			resp, err = http.Get(fmt.Sprintf("%s%s%s", srv.URL, "/urls/", tt.urlID))
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Error(err)
+			}
+			if err = resp.Body.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if diff := cmp.Diff(tt.respBody, string(body)); diff != "" {
+				t.Errorf(diff)
+			}
+		})
 	}
-	assert.Equal(t, u.ID, testUrl.ID)
 }

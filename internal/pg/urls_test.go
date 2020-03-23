@@ -55,6 +55,11 @@ func TestCreate(t *testing.T) {
 	assert.Equal(t, 1, u.ID)
 }
 
+func TestService_GetById(t *testing.T){
+	test
+}
+
+
 func TestById(t *testing.T) {
 	dbClient := NewClient()
 	err := dbClient.Open(psqlInfo)
