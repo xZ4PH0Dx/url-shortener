@@ -3,7 +3,7 @@ package pg
 import (
 	"context"
 	"github.com/jmoiron/sqlx"
-	"url_shortener"
+	"github.com/xZ4PH0Dx/url_shortener"
 )
 
 func NewSQLUrlRepo(Conn *sqlx.DB) url_shortener.UrlRepository {

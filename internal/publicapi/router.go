@@ -2,10 +2,11 @@ package publicapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/xZ4PH0Dx/url_shortener"
 	"net/http"
 	"strconv"
-	"url_shortener"
 )
 
 type Router struct {
@@ -32,13 +33,16 @@ func (ro *Router) Handler() http.Handler {
 func (ro *Router) createUrlHandler(w http.ResponseWriter, r *http.Request) {
 	var u url_shortener.Url
 	err := json.NewDecoder(r.Body).Decode(&u)
+	if err != nil {
+		fmt.Println(err)
+	}
 	actualU, err := ro.app.CreateUrl(r.Context(), u)
 	if err != nil {
-		encodeErrorResp(err, w)
+		_ = encodeErrorResp(err, w)
 	}
 	err = encodeJSONResponse(w, actualU)
 	if err != nil {
-		encodeErrorResp(err, w)
+		_ = encodeErrorResp(err, w)
 	}
 }
 
@@ -46,11 +50,11 @@ func (ro *Router) getByIdHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		encodeErrorResp(err, w)
+		_ = encodeErrorResp(err, w)
 	}
 	u, err := ro.app.GetById(r.Context(), id)
 	if err != nil {
-		encodeErrorResp(err, w)
+		_ = encodeErrorResp(err, w)
 	}
 	//mu, err := json.Marshal(u)
 	//if err != nil {
@@ -60,7 +64,7 @@ func (ro *Router) getByIdHandler(w http.ResponseWriter, r *http.Request) {
 	//w.Write(mu)
 	err = encodeJSONResponse(w, u)
 	if err != nil {
-		encodeErrorResp(err, w)
+		_, _ = w.Write([]byte(encodeErrorResp(err, w).Error()))
 	}
 }
 
