@@ -38,12 +38,12 @@ func (ro *Router) createUrlHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	actualU, err := ro.app.CreateUrl(r.Context(), u)
 	if err != nil {
-		_ = encodeErrorResp(err, w)
+		encodeErrorResp(err, w)
 		return
 	}
 	err = encodeJSONResponse(w, actualU)
 	if err != nil {
-		_ = encodeErrorResp(err, w)
+		encodeErrorResp(err, w)
 		return
 	}
 }
@@ -52,17 +52,17 @@ func (ro *Router) getByIdHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		_ = encodeErrorResp(err, w)
+		encodeErrorResp(err, w)
 		return
 	}
 	u, err := ro.app.GetById(r.Context(), id)
 	if err != nil {
-		_ = encodeErrorResp(err, w)
+		encodeErrorResp(err, w)
 		return
 	}
 	err = encodeJSONResponse(w, u)
 	if err != nil {
-		_ = encodeErrorResp(err, w)
+		encodeErrorResp(err, w)
 		return
 	}
 }

@@ -124,9 +124,11 @@ func TestService_CreateUrl(t *testing.T) {
 			}
 			b := bytes.NewBuffer(mUrl)
 
-			resp, err := http.Post(fmt.Sprintf("%s%s", srv.URL, "/urls"), "application/json", b)
-
-			resp, err = http.Get(fmt.Sprintf("%s%s%s", srv.URL, "/urls/", tt.urlID))
+			_, err = http.Post(fmt.Sprintf("%s%s", srv.URL, "/urls"), "application/json", b)
+			if err != nil {
+				t.Fatal(err)
+			}
+			resp, err := http.Get(fmt.Sprintf("%s%s%s", srv.URL, "/urls/", tt.urlID))
 			if err != nil {
 				t.Fatal(err)
 			}
