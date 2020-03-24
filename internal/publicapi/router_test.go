@@ -72,9 +72,8 @@ func TestService_GetById(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			if err = resp.Body.Close(); err != nil {
-				t.Fatal(err)
-			}
+			resp.Body.Close()
+
 			if diff := cmp.Diff(tt.respBody, string(body)); diff != "" {
 				t.Errorf(diff)
 			}
