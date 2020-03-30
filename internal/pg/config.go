@@ -10,9 +10,11 @@ func NewClient(options ...ConfigOption) *Client {
 		logger:         log.NewNopLogger(),
 		maxConnections: defaultMaxConnections,
 	}
+
 	for _, opt := range options {
 		opt(&c)
 	}
+
 	return &c
 }
 

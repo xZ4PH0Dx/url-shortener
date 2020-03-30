@@ -4,20 +4,20 @@ import (
 	"context"
 )
 
-// Url represents ....
-type Url struct {
+// URL represents ....
+type URL struct {
 	ID   int    `json:"id"`
-	Url  string `json:"url"`
+	URL  string `json:"url"`
 	Code string `json:"code"`
 }
 
-type UrlRepository interface {
-	Create(ctx context.Context, u *Url) error
-	ById(ctx context.Context, i int) (Url, error)
-	ByCode(ctx context.Context, s string) (Url, error)
+type URLRepository interface {
+	Create(ctx context.Context, u *URL) error
+	ByID(ctx context.Context, i int) (URL, error)
+	ByCode(ctx context.Context, s string) (URL, error)
 }
 type PublicAPIService interface {
-	CreateUrl(ctx context.Context, u Url) (Url, error)
-	GetById(ctx context.Context, i int) (Url, error)
-	GetByCode(ctx context.Context, code string) (Url, error)
+	CreateURL(ctx context.Context, u URL) (URL, error)
+	GetByID(ctx context.Context, i int) (URL, error)
+	GetByCode(ctx context.Context, code string) (URL, error)
 }
