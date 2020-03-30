@@ -32,7 +32,6 @@ func init() {
 	dbClient := NewClient()
 
 	err := dbClient.Open(psqlInfo)
-
 	if err != nil {
 		fmt.Println(err)
 	}
