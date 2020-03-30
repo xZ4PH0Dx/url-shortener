@@ -35,8 +35,8 @@ func main() {
 //		err = dbClient.Open(psqlInfo)
 //		checkErr(err)
 //		urlRepo := pg.NewSQLUrlRepo(dbClient.DB)
-//		u, err := urlRepo.ById(c, id)
-//		c.Redirect(http.StatusMovedPermanently, u.Url)
+//		u, err := urlRepo.ByID(c, id)
+//		c.Redirect(http.StatusMovedPermanently, u.URL)
 //	})
 //
 //	router.GET("/u/:code", func(c *gin.Context) {
@@ -47,16 +47,16 @@ func main() {
 //		checkErr(err)
 //		urlRepo := pg.NewSQLUrlRepo(dbClient.DB)
 //		u, err := urlRepo.ByCode(c, code)
-//		fmt.Println("URL TO REDIRECT", u.Url)
-//		c.Redirect(http.StatusMovedPermanently, u.Url)
+//		fmt.Println("URL TO REDIRECT", u.URL)
+//		c.Redirect(http.StatusMovedPermanently, u.URL)
 //	})
 //	router.POST("/shorten", func(c *gin.Context) {
 //		origUrl := c.Request.PostFormValue("url")
 //		shortUri := generateCode([]byte(origUrl))
 //		shortlink := "http://localhost" + appPort + "/u/" + shortUri
 //
-//		u := pg.Url{
-//			Url:  origUrl,
+//		u := pg.URL{
+//			URL:  origUrl,
 //			Code: shortUri,
 //		}
 //
